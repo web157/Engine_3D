@@ -6,6 +6,7 @@
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
         <script type="text/javascript" src="System/System_.js"></script>
         <script type="text/javascript" src="WebGL/WebGL.js"></script>
+        <script type="text/javascript" src="Physics/Collision.js"></script>
         <script  type="text/javascript" src="gl-matrix-min.js"></script>
        
         <title>Engine_3D</title>
@@ -46,12 +47,14 @@
     var Time_2 = 0;
 
     var PosX = Array();
+    var PosY = Array();
     var PosZ = Array();
     var PosT = Array();
 
     var PosMouse = 0;
 
     PosX[0] = 0.0;
+    PosY[0] = 0.0;
     PosZ[0] = 0.0;
     PosT[0] = 0.0;
 
@@ -89,7 +92,7 @@
 
                     //Time_1 = date.getMilliseconds();
 
-                    sys_.Run(PosX, PosZ, PosT, PosMouse);
+                    sys_.Run(PosX, PosY, PosZ, PosT, PosMouse);
 
                     //Time_2 = Time_1 - Time_2;
 
@@ -148,6 +151,6 @@
              };
     })();
     </script>
-        
+    
     </body>
 </html>

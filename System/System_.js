@@ -3,6 +3,8 @@ function System_(gl)
 {
       this.gl_ = new WebGL(gl);
       
+      this.collis = new Collision();
+      
       this.Texture_ = Array();
       
       this.Obj_;
@@ -16,11 +18,15 @@ System_.prototype.Initalize = function()
     this.ArrObj();
     
      this.gl_.InitGl(this.Texture_, this.Obj_Data);
+     
+     this.collis.AssemblyTriangle(this.gl_.GetVert());
 };
 
-System_.prototype.Run = function(PosX, PosZ, PosT, PosMouse)
+System_.prototype.Run = function(PosX, PosY, PosZ, PosT, PosMouse)
 {
-     this.gl_.ObjPos("car", 0, PosX, PosZ, PosT);
+    PosY[0] = this.collis.ObjPosition(PosX, PosY, PosZ);
+    
+     this.gl_.ObjPos("car", 0, PosX, PosY, PosZ, PosT);
           
      this.gl_.DrawGl(PosMouse);
 };

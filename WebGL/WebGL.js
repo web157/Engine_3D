@@ -14,7 +14,14 @@ function WebGL(gl)
       this.pMatrix = mat4.create();
           
       this.Obj_;    
+      
+      this.vertices1 = Array();
 }
+
+WebGL.prototype.GetVert = function()
+{
+    return this.vertices1;
+};
 
 WebGL.prototype.initShaders = function()
 {
@@ -72,8 +79,8 @@ WebGL.prototype.setupWebGL = function(i, PosMouse)
     this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
     mat4.perspective(this.pMatrix, 1.04, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 1000.0);
     mat4.identity(this.mvMatrix);
-    mat4.lookAt(this.mvMatrix, [this.Obj_["car"]["x"] + Math.sin(PosMouse) * 25, 10,this.Obj_["car"]["z"] + Math.cos(PosMouse) * 25], [this.Obj_["car"]["x"],0,this.Obj_["car"]["z"]], [0,1,0]);
-     mat4.translate(this.mvMatrix,this.mvMatrix,[this.Obj_[i]["x"], 0, this.Obj_[i]["z"]]);
+    mat4.lookAt(this.mvMatrix, [this.Obj_["car"]["x"] + Math.sin(PosMouse) * 25,this.Obj_["car"]["y"] + 10,this.Obj_["car"]["z"] + Math.cos(PosMouse) * 25], [this.Obj_["car"]["x"],this.Obj_["car"]["y"],this.Obj_["car"]["z"]], [0,1,0]);
+     mat4.translate(this.mvMatrix,this.mvMatrix,[this.Obj_[i]["x"], this.Obj_[i]["y"], this.Obj_[i]["z"]]);
      mat4.rotate(this.mvMatrix,this.mvMatrix, this.Obj_[i]["t"], [0, 1, 0]); 
 };
 
@@ -94,6 +101,8 @@ WebGL.prototype.initBuffers = function(i, string)
                    vertices = $.parseJSON(data);                  
                    }
                });
+               
+               
  
     $.ajax({
                    async: false,
@@ -115,8 +124,10 @@ WebGL.prototype.initBuffers = function(i, string)
                    textureCoords = $.parseJSON(data);                  
                    }
                });
-                  
-    
+             
+    if(i == "mapa"){
+        this.vertices1 = vertices;
+    }
  
   this.vertexBuffer[i] = this.gl.createBuffer();
   this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer[i]);
@@ -221,9 +232,10 @@ WebGL.prototype.DrawGl = function(PosMouse)
         }
 };
 
-WebGL.prototype.ObjPos = function(i, j, PosX, PosZ, PosT)
+WebGL.prototype.ObjPos = function(i, j, PosX, PosY, PosZ, PosT)
 {
     this.Obj_[i]["x"] = PosX[j];
+    this.Obj_[i]["y"] = PosY[j];
     this.Obj_[i]["z"] = PosZ[j];
     this.Obj_[i]["t"] = PosT[j];
              
