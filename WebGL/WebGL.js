@@ -72,7 +72,7 @@ WebGL.prototype.setupWebGL = function(i, PosMouse)
     this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
     mat4.perspective(this.pMatrix, 1.04, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 1000.0);
     mat4.identity(this.mvMatrix);
-    mat4.lookAt(this.mvMatrix, [this.Obj_[0]["x"] + Math.sin(PosMouse) * 25, 10,this.Obj_[0]["z"] + Math.cos(PosMouse) * 25], [this.Obj_[0]["x"],0,this.Obj_[0]["z"]], [0,1,0]);
+    mat4.lookAt(this.mvMatrix, [this.Obj_["car"]["x"] + Math.sin(PosMouse) * 25, 10,this.Obj_["car"]["z"] + Math.cos(PosMouse) * 25], [this.Obj_["car"]["x"],0,this.Obj_["car"]["z"]], [0,1,0]);
      mat4.translate(this.mvMatrix,this.mvMatrix,[this.Obj_[i]["x"], 0, this.Obj_[i]["z"]]);
      mat4.rotate(this.mvMatrix,this.mvMatrix, this.Obj_[i]["t"], [0, 1, 0]); 
 };
@@ -89,7 +89,7 @@ WebGL.prototype.initBuffers = function(i, string)
                    async: false,
                    type: "POST",
                    url: "LoadGeometry.php",
-                   data: {fname:"Vert", ffail:string},
+                   data: {fname:"Vert", ffile:string},
                    success: function(data) {
                    vertices = $.parseJSON(data);                  
                    }
@@ -99,7 +99,7 @@ WebGL.prototype.initBuffers = function(i, string)
                    async: false,
                    type: "POST",
                    url: "LoadGeometry.php",
-                   data: {fname:"Ind", ffail:string},
+                   data: {fname:"Ind", ffile:string},
                    success: function(data) {
                    indices = $.parseJSON(data); 
                   // document.write(indices.length+ "</br>");
@@ -110,7 +110,7 @@ WebGL.prototype.initBuffers = function(i, string)
                    async: false,
                    type: "POST",
                    url: "LoadGeometry.php",
-                   data: {fname:"Text", ffail:string},
+                   data: {fname:"Text", ffile:string},
                    success: function(data) {
                    textureCoords = $.parseJSON(data);                  
                    }
@@ -139,6 +139,8 @@ WebGL.prototype.initBuffers = function(i, string)
 
 WebGL.prototype.draw = function(i)
 {
+    if(this.Obj_[i]["hide"] === true) { return; }
+    
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer[this.Obj_[i]["name"]]);
     this.gl.vertexAttribPointer(this.shaderProgram.vertexPositionAttribute, 
                          this.vertexBuffer[this.Obj_[i]["name"]].itemSize, this.gl.FLOAT, false, 0, 0);
@@ -197,8 +199,8 @@ WebGL.prototype.InitGl = function(Texture_, Obj_)
    
         this.initShaders();
        
-       for(var i = 0; i < Obj_.length; i++){
-        this.initBuffers(Obj_[i]["name"],Obj_[i]["way"]);         
+       for(var i in Obj_){
+        this.initBuffers(Obj_[i]["name"],Obj_[i]["way"]);      
     }
     
         
@@ -212,7 +214,7 @@ WebGL.prototype.DrawGl = function(PosMouse)
 {      
     this.RenderBegin();
     
-        for(var i = 0; i < this.Obj_.length; i++){
+        for(var i in this.Obj_){
             this.setupWebGL(i, PosMouse);
             this.setMatrixUniforms();
             this.draw(i);            
