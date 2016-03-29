@@ -1,17 +1,17 @@
 <?php
 
 $name = NULL;
-$Fail_ = NULL;
+$File_ = NULL;
 
 if(isset($_POST['fname'])){
 $name = $_POST['fname'];
 }
 
-if(isset($_POST['ffail'])){
-$Fail_ = $_POST['ffail'];
+if(isset($_POST['ffile'])){
+$File_ = $_POST['ffile'];
 }
     
-   $fp = fopen($Fail_, 'r');
+   $fp = fopen($File_, 'r');
    
    $vertexX = array();
    $vertexY = array(); 
