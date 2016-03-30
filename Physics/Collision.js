@@ -36,7 +36,7 @@ Collision.prototype.ObjPosition = function(PosX, PosY, PosZ)
 			var x = PosX[0];
 			var y = PosZ[0];
 
-			var f1 = s2(x, y, x1, y1, x2, y2);//определяем площади 3х малых треугольников
+			var f1 = s2(x, y, x1, y1, x2, y2);
 			var f2 = s2(x, y, x2, y2, x3, y3);
 			var f3 = s2(x, y, x3, y3, x1, y1);
 

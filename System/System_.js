@@ -10,6 +10,8 @@ function System_(gl)
       this.Obj_;
       
       this.Obj_Data = Array();
+      
+      this.PY;
 }
 
 System_.prototype.Initalize = function()
@@ -25,6 +27,8 @@ System_.prototype.Initalize = function()
 System_.prototype.Run = function(PosX, PosY, PosZ, PosT, PosMouse)
 {
     PosY[0] = this.collis.ObjPosition(PosX, PosY, PosZ);
+    
+    this.PY = PosY[0];
     
      this.gl_.ObjPos("car", 0, PosX, PosY, PosZ, PosT);
           
@@ -80,4 +84,38 @@ System_.prototype.ArrObj = function()
      
      this.Obj_Data["zamok"] = this.Obj_;
      
+};
+
+System_.prototype.NewObj = function(str)
+{
+    this.Obj_ = {
+         name: "car",
+         way: "Object/car.obj",
+         text: "car",
+         x: 0,
+         y: 0,
+         z: 0,
+         t: 0,
+         hide: false
+     };     
+     this.Obj_Data[str] = this.Obj_;  
+};
+
+System_.prototype.NetObjPos = function(str)
+{
+      
+        this.Obj_Data[str[4]]["x"] = str[0];
+        this.Obj_Data[str[4]]["y"] = str[1];
+        this.Obj_Data[str[4]]["z"] = str[2];
+        this.Obj_Data[str[4]]["t"] = str[3];
+};
+
+System_.prototype.ObjPosY = function()
+{
+    return this.PY;
+};
+
+System_.prototype.ObjDel = function(str)
+{
+    delete this.Obj_Data[str];     
 };

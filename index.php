@@ -42,6 +42,14 @@
         </script>
     
     <script type="text/javascript"> 
+        
+            var webSocket = new WebSocket('ws://127.0.0.1:9595');
+ 
+            webSocket.onopen = function(event) { alert('onopen'); };  
+            
+            webSocket.onerror = function(event) { alert('Произошла ошибка');  };
+            
+            webSocket.onclose = function(event){ alert('Соединение закрыто...'); };
 
     var Time_1 = 0;
     var Time_2 = 0;
@@ -57,6 +65,14 @@
     PosY[0] = 0.0;
     PosZ[0] = 0.0;
     PosT[0] = 0.0;
+    
+    var  NetPos = Array();
+    var NameObj;
+    
+    NetPos[0] = 0;
+    NetPos[1] = 0;
+    NetPos[2] = 0;
+    NetPos[3] = 0;
 
     var date = new Date();
 
@@ -81,10 +97,53 @@
 
             gl.viewportWidth = canvas.width;
             gl.viewportHeight = canvas.height;
-
+                       
             var sys_ = new System_(gl);
 
             sys_.Initalize();
+            
+            webSocket.onmessage = function(event)
+            {                             
+             var NetObjData = event.data; 
+             
+             if("Name" == NetObjData.substr(0, 4))
+               {     
+                   var NewObj_ = NetObjData.substr(4);
+                   
+                   RegEx=/\s/g;
+                   
+                   NewObj_ = NewObj_.replace(RegEx,"");
+                   
+                   //NameObj;
+                   
+                   NetPos[4] = NewObj_;
+                  
+               }else if("New" == NetObjData.substr(0, 3))
+               {     
+                   var NewObj_ = NetObjData.substr(3);
+                   
+                   RegEx=/\s/g;
+                   
+                   NewObj_ = NewObj_.replace(RegEx,"");
+                   
+                   sys_.NewObj(NewObj_);
+               }else if("Del" == NetObjData.substr(0, 3)){
+                   
+                   var DelObj_ = NetObjData.substr(3);
+                   
+                   RegEx=/\s/g;
+                   
+                   DelObj_ = DelObj_.replace(RegEx,"");
+                         
+                   sys_.ObjDel(DelObj_);
+                   
+               }else{
+                   
+                var PsNetD =  JSON.parse(event.data);
+                
+                sys_.NetObjPos(PsNetD);
+               }
+            };
 
             window.onload=function(){
 
@@ -104,24 +163,35 @@
             function handleKeyDown(e){
         switch(e.keyCode)
         {
-            case 65:  // стрелка вправо
+            case 65: 
                 PosT[0]+=0.2;
-
+                                           
+                 NetPos[3] = PosT[0];
+            webSocket.send(JSON.stringify(NetPos));
                 break;
-            case 68:  // стрелка влево
+            case 68:  
                 PosT[0]-=0.2;
 
-
+                NetPos[3] = PosT[0];
+             webSocket.send(JSON.stringify(NetPos));
                 break;
-            case 87:  // стрелка вниз
+            case 87:  
                PosZ[0] += Math.cos(PosT[0]) * 0.5;
                PosX[0] += Math.sin(PosT[0]) * 0.5;
 
+                NetPos[0] = PosX[0];
+                NetPos[1] = sys_.ObjPosY();
+           NetPos[2] = PosZ[0];
+            webSocket.send(JSON.stringify(NetPos));
                 break;
-            case 83:  // стрелка вверх
+            case 83:  
                 PosZ[0] -= Math.cos(PosT[0]) * 0.5;
                 PosX[0] -= Math.sin(PosT[0]) * 0.5;
 
+                 NetPos[0] = PosX[0];
+                 NetPos[1] = sys_.ObjPosY();
+           NetPos[2] = PosZ[0];
+            webSocket.send(JSON.stringify(NetPos));
                 break;
         }   
 
