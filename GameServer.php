@@ -1,6 +1,7 @@
 <?php
 
 require_once 'ServerScript/UserData.php';
+require_once 'ServerScript/ObjPicking.php';
 
 $DatUsr = array();
 
@@ -97,7 +98,33 @@ socket_listen($m_sock);
                   @socket_close($sock);
                    continue;
             }
+            
+            if($d['payload'] == "shot"){
+                
+                foreach ($cls as $socket) {
+                                                  
+                if($socket != $m_sock && $val > 0 && $sock != $socket){
+                
+              if(Pick($DatUsr[$sock]->PosX, $DatUsr[$sock]->PosY, $DatUsr[$sock]->PosZ, $DatUsr[$sock]->PosT,
+                 $DatUsr[$socket]->PosX, $DatUsr[$socket]->PosY, $DatUsr[$socket]->PosZ, $DatUsr[$socket]->PosT) == true)
+              {
+                  $DatUsr[$socket]->xp -= 1;                  
+                  
+                  if($DatUsr[$socket]->xp < 0){
+                      
+                  @socket_write($socket,(encode("shot")));
                    
+                  $DatUsr[$socket]->xp = 10;
+                  }
+              }
+              
+                }
+                }
+              
+            }
+                 
+            if($d['payload'] != "shot"){
+            
             $tempData = html_entity_decode($d['payload']); $cleanData = json_decode($tempData);
              
             $DatUsr[$sock]->PosX = $cleanData[0];
@@ -105,7 +132,7 @@ socket_listen($m_sock);
             $DatUsr[$sock]->PosZ = $cleanData[2];
             $DatUsr[$sock]->PosT = $cleanData[3];
             $DatUsr[$sock]->Name_ = $cleanData[4];
-                
+                                     
              foreach ($cls as $socket) {
                                                   
                 if($socket != $m_sock && $val > 0 && $sock != $socket){
@@ -115,6 +142,7 @@ socket_listen($m_sock);
                 }
              }
             
+            }
             
         }
                

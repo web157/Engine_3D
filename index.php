@@ -73,8 +73,11 @@
     NetPos[1] = 0;
     NetPos[2] = 0;
     NetPos[3] = 0;
-
-    var date = new Date();
+    
+    function getRandomArbitary(min, max)
+    {
+      return Math.random() * (max - min) + min;
+    }  
 
     gl = new Object();
 
@@ -94,6 +97,7 @@
         if(gl){
               document.addEventListener('keydown', handleKeyDown, false);       
               document.addEventListener('mousemove', handleMouseDown, false);
+              document.addEventListener('mousedown', handleMouseClic, false);
 
             gl.viewportWidth = canvas.width;
             gl.viewportHeight = canvas.height;
@@ -137,6 +141,14 @@
                          
                    sys_.ObjDel(DelObj_);
                    
+               }else if("shot" == NetObjData.substr(0, 4)){
+                  
+                  NetPos[0] = PosX[0] = getRandomArbitary(-150,150);
+                 
+                  NetPos[2] = PosZ[0] = getRandomArbitary(-150,150);
+                  NetPos[3] = PosT[0] = 0.0;
+                  NetPos[1] = PosY[0] = sys_.NewPosY(PosX, PosY, PosZ);
+                  webSocket.send(JSON.stringify(NetPos));
                }else{
                    
                 var PsNetD =  JSON.parse(event.data);
@@ -148,13 +160,9 @@
             window.onload=function(){
 
                 (function animloop(){
-
-                    //Time_1 = date.getMilliseconds();
-
+                 
                     sys_.Run(PosX, PosY, PosZ, PosT, PosMouse);
-
-                    //Time_2 = Time_1 - Time_2;
-
+                  
                   requestAnimFrame(animloop, canvas);
                 })();
 
@@ -209,6 +217,14 @@
 
         temp1 = temp;    
     }
+    
+    function handleMouseClic(e){
+       
+       if(event.which == 1){
+         webSocket.send("shot");
+       }
+       
+    }
 
             window.requestAnimFrame = (function(){
           return  window.requestAnimationFrame       || 
@@ -221,6 +237,6 @@
              };
     })();
     </script>
-    
+   
     </body>
 </html>

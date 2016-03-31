@@ -119,3 +119,10 @@ System_.prototype.ObjDel = function(str)
 {
     delete this.Obj_Data[str];     
 };
+
+System_.prototype.NewPosY = function(PosX, PosY, PosZ)
+{
+    var res_ = this.collis.ObjPosition(PosX, PosY, PosZ);
+    
+    return res_;     
+};

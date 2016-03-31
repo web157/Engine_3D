@@ -44,7 +44,7 @@ Collision.prototype.ObjPosition = function(PosX, PosY, PosZ)
 
 
 			if ((f1*f2) > 0 && (f2*f3) > 0){
-                            //return this.Vert[i - 1];
+                         
                                 x1 = this.Vert[i - 8];
 				y1 = this.Vert[i- 7];
 				z1 = this.Vert[i-6];

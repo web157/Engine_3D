@@ -7,4 +7,5 @@ class User_
     public $PosZ = 0;
     public $PosT = 0;
     public $Name_ = "";
+    public $xp = 3;
 }
